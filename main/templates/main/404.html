@@ -19,7 +19,7 @@
 		</div>
 		<div class="text">
 			<center>
-				{{ exc }}<br>
+				{{ exc|truncatewords:5 }}<br>
 				<a href="{% url 'home' %}">Return Home</a>
 			</center>
 		</div>
