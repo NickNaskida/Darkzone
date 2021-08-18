@@ -1,0 +1,25 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block page-name %}Lockout{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'login' %}">Login</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="">Lockout</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'login' %}">Login</a>	
+{% endblock %}
+
+{% block content %}	
+	<br><br><br>
+	<center>
+		<h4>You have been locked up, try again in {{cooloff_time_minutes}} minutes.</h4>
+	</center>
+	<br><br><br>
+{% endblock %}

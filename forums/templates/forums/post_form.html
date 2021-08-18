@@ -1,0 +1,17 @@
+{% load crispy_forms_tags %}
+{% load static %}
+
+<div class="new_post_butt" id="new_post_butt">
+	<button class="button-style"><i class="fas fa-plus"></i> New Post</button>
+</div>
+<div class="add_post_form" id="add_post_form">
+	<form method="POST">						
+		{% csrf_token %}
+		{{ form|crispy }}
+		{{ form.media }}
+		<button class="button-style" type="submit">Post</button>
+	</form>
+</div>
+
+<script type="text/javascript" src="{% static 'main/js/add_post.js' %}"></script>
+<script type="text/javascript" src="{% static 'main/js/tags.js' %}"></script>

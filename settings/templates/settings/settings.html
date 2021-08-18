@@ -1,0 +1,70 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}Settings{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'settings' %}">Settings</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="settings_wrapper">
+		<div class="settings_profile">
+			<nav class="settings_navbar">
+				<h6>Settings</h6>
+				<hr>
+				<a href="{% url 'settings' %}" class="settings_nav__link">Account details</a>			
+			</nav>
+		</div>
+		<div class="settings_form">
+			<form method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+				<h6>Profile picture</h6>
+				<div class="input-group mb-3">
+				  	{{form.avatar_pic}}
+				</div>
+				<h6>Other</h6>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="fas fa-birthday-cake"></i></span>
+				  	{{form.birth_date}}
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="fab fa-github"></i></i></span>
+					{{form.github}}
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+					{{form.location}}
+				</div>
+				<h6>Social</h6>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="fab fa-facebook"></i></i></span>
+					{{form.facebook}}
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="fab fa-twitter"></i></i></span>
+					{{form.twitter}}
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="fab fa-instagram"></i></i></span>
+					{{form.instagram}}
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="fab fa-youtube"></i></i></span>
+					{{form.youtube}}
+				</div>
+				<center>
+					<button type="submit" class="button-style">Save <i class="fas fa-save"></i></button>
+				</center>
+			</form>
+		</div>
+	</div>
+{% endblock %}

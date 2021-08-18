@@ -1,0 +1,140 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}Members{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'members' %}">Members</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="members__wrapper">
+		<div class="members__main">
+			<div class="members__main__header">
+				<a href="{% url 'members' %}" class="members__link members__link_active">
+					Overview
+				</a>
+				<a href="{% url 'all_members' %}" class="members__link">
+					All members
+				</a>
+			</div>
+			<div class="members__main__body">
+				<div class="members__card">
+					<div class="members__card__title">
+						<span>Most Posts</span>
+					</div>
+					{% for user in most_posts %}
+						<a href="{% url 'profile' user.username %}">
+							<div class="member_box">
+								<div class="member_box_img">
+									<img src="{{user.userprofile.avatar_pic.url }}" alt="User avatar">
+								</div>
+								<div class="member_box_data">
+									<span style="color: {{user.userrole.role.color}};">{{ user.username }}</span>
+								</div>
+								<div class="member_box_num">
+									{{user.num_posts}}
+								</div>							
+							</div>
+						</a>	
+					{% endfor %}
+				</div>
+				<div class="members__card">
+					<div class="members__card__title">
+						<span>Most Likes</span>
+						{% for user in most_likes %}
+							<a href="{% url 'profile' user.username %}">
+								<div class="member_box">
+									<div class="member_box_img">
+										<img src="{{user.userprofile.avatar_pic.url }}" alt="User avatar">
+									</div>
+									<div class="member_box_data">
+										<span style="color: {{user.userrole.role.color}};">{{ user.username }}</span>
+									</div>
+									<div class="member_box_num">
+										{{user.likes_num}}
+									</div>							
+								</div>
+							</a>	
+						{% endfor %}
+					</div>
+				</div>
+				<div class="members__card">
+					<div class="members__card__title">
+						<span>Most replies</span>
+						{% for user in most_replies %}
+							<a href="{% url 'profile' user.username %}">
+								<div class="member_box">
+									<div class="member_box_img">
+										<img src="{{user.userprofile.avatar_pic.url }}" alt="User avatar">
+									</div>
+									<div class="member_box_data">
+										<span style="color: {{user.userrole.role.color}};">{{ user.username|truncatechars:"18" }}</span>
+									</div>
+									<div class="member_box_num">
+										{{user.num_replies}}
+									</div>							
+								</div>
+							</a>	
+						{% endfor %}
+					</div>
+				</div>
+				<div class="members__card">
+					<div class="members__card__title">
+						<span>Staff members</span>
+					</div>
+					{% for user in staff_members %}
+						<a href="{% url 'profile' user.username %}">
+							<div class="member_box">
+								<div class="member_box_img">
+									<img src="{{user.userprofile.avatar_pic.url }}" alt="User avatar">
+								</div>
+								<div class="member_box_data">
+									<span style="color: {{user.userrole.role.color}};">{{ user.username|truncatechars:"18" }}</span>
+								</div>							
+							</div>
+						</a>	
+					{% endfor %}
+				</div>
+			</div>	
+		</div>
+		<div class="members__sidebar">
+			<h6>Find a member</h6>
+			<div class="find_member">
+				<form method="POST">
+					{% csrf_token %}
+    				{{ form|crispy }}
+    				<input class="find_user_butt" type="submit" value="Go">
+				</form>
+			</div>
+			<h6>Newest members</h6>
+			<div class="newest_members">
+				{% for user in newest_users %}
+					<a href="{% url 'profile' user.username %}">
+						<div class="member_box">
+							<div class="member_box_img">
+								<img src="{{user.userprofile.avatar_pic.url }}" alt="User avatar">
+							</div>
+							<div class="member_box_data">
+								<div>
+									<span style="color: {{user.userrole.role.color}};">{{ user.username|truncatechars:"18" }}</span>
+								</div>
+								<div>
+									joined {{user.date_joined|timesince:now}} ago
+								</div>
+							</div>
+						</div>
+					</a>
+				{% endfor %}
+			</div>
+		</div>
+	</div>	
+{% endblock %}

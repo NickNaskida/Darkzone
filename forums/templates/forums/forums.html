@@ -1,0 +1,126 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}Forums{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'forums' %}">Forums</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}
+	
+	{% if user.is_authenticated %}
+		{% if 'Can add Category' in permissions %}		
+			<a href="{% url 'add_category' %}" class="add_category"><i class="fas fa-folder-plus fa-lg"></i> Add Category</a>
+		{% endif %}
+		{% if 'Can add Main Thread' in permissions %}
+			<a href="{% url 'add_category_thread' %}" class="add_category"><i class="fas fa-plus fa-md"></i> Add Thread</a>
+			<hr>
+		{% endif %}		
+	{% endif %}
+
+	{% for category in categories %}
+		<div class="category">
+			<div class="category__header">
+				<div class="category__icon">
+					<img src="{% static 'main/img/folder.svg' %}" alt="folder icon">
+				</div>
+				<div class="category__info">
+					<div class="category__name">
+						{{category.category_name}}
+					</div>
+					<div class="category__description">
+						{{category.category_description}}
+					</div>
+				</div>
+				<div class="category__edit">
+					{% if user.is_authenticated %}
+						{% if 'Can change Category' in permissions  %}
+							<a href="{% url 'edit_category' category.pk %}">
+								<i class="far fa-pen fa-md"></i>
+							</a>
+						{% endif %}
+					{% endif %}
+				</div>
+			</div>
+			<div class="category_thread">
+				{% for thread in threads %}
+					{% if thread.category_id == category.id %}
+						<a href="{% url 'category_thread' thread.category_thread_slug %}">
+							<div class="main_thread">
+								<div class="main_thread_icon">
+									<div class="main_thread_icon_border">
+										{{thread.category_thread_icon|safe}}
+									</div>
+								</div>
+
+								<div class="main_thread_info">
+									<div class="main_thread_name">
+										{{thread.category_thread_name}}				
+									</div>
+
+									{% if thread.category_thread_description %}
+										<div class="main_thread_description">
+											{{thread.category_thread_description}}
+										</div>
+									{% endif %}
+
+									<div class="main_thread_stats">
+										<div class="main_thread_stats__threads" title="Total posts">
+											<i class="fas fa-comment-alt fa-sm"></i> {{thread.thread_posts.all.count}}
+										</div>
+										{% if thread.id in new_posts %}
+											<div class="new_post_badge" title="New post/posts in this thread for last 24 hours">
+												New	
+											</div>
+										{% endif %}		
+									</div>
+								</div>
+								{% if thread.thread_posts.all.last %}
+									{% if thread.category_thread_type != 'Private' %}
+										<div class="main_thread_other">
+											<div class="last_post_name">
+												{{thread.thread_posts.all.last.post_title|truncatechars:26}}
+											</div>
+											<div class="last_post_other">
+												<i class="far fa-clock fa-md"></i> {{thread.thread_posts.all.last.post_date|date:"d/b/y | H:i"}} by {{thread.thread_posts.all.last.author.username|truncatechars:12}}
+											</div>
+										</div>
+									{% endif %}	
+								{% endif %}
+								{% if thread.category_thread_type == 'Private' %}
+									{% if 'Can view private thread' in permissions %}
+										{% if thread.thread_posts.all.last %}
+											<div class="main_thread_other">
+												<div class="last_post_name">
+													{{thread.thread_posts.all.last.post_title|truncatechars:26}}
+												</div>
+												<div class="last_post_other">
+													<i class="far fa-clock fa-md"></i> {{thread.thread_posts.all.last.post_date|date:"d/b/y | H:i"}} by {{thread.thread_posts.all.last.author.username|truncatechars:12}}
+												</div>
+											</div>
+										{% endif %}
+									{% else %}
+										<div class="main_thread_other">
+											<div class="last_post_name">
+												Private
+											</div>
+										</div>
+									{% endif %}	
+								{% endif %}			
+							</div>
+						</a>						
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+{% endblock %}

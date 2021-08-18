@@ -1,0 +1,38 @@
+<div class="search_bar" id="search_box">
+	<div><input type="text"></div>
+	<div>
+		<a href=""><i class="fas fa-cog"></i> Advanced Search</a>
+		<button>Close</button>
+	</div>					
+</div>
+
+<style type="text/css">
+		.search_bar {
+		display: none;
+		position: absolute;
+		z-index: 3;
+		top: 80px;
+		transform: translateX(-250px);
+		height: 50px;
+		width: 310px;
+		border-radius: 5px;
+		background-color: #1f2326;
+	}
+</style>
+
+<script type="text/javascript">
+	// Search button
+	var search_butt = document.getElementById("search_butt")
+	var search_box = document.getElementById("search_box")
+
+	function ShowSearch() {
+	    search_box.style.display = 'block';
+	    search_box.style.boxShadow = '0 0 14px 2px rgb(0 0 0 / 81%)';
+	}
+
+	search_butt.addEventListener("click", ShowSearch)
+</script>
+
+{% include 'main/search.html' %}
+
+<button id="search_butt"><i class="fas fa-search"></i></button>

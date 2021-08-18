@@ -1,0 +1,58 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}Notifications{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'notifications' %}">Notifications</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}	
+	<div class="notifications-wrapper">
+		<span>Last Notifications</span>
+		{% for i in notifications %}
+			<div class="notification">
+				<div class="notification__id">
+					<div class="notification__status">
+						{% if i.verb == 'info' %}
+							<i class="fas fa-info-circle fa-2x"></i>
+						{% elif i.verb == 'success' %}
+							<i class="fas fa-check-circle fa-2x"></i>
+						{% elif i.verb == 'warning' %}
+							<i class="fas fa-exclamation-triangle fa-2x"></i>
+						{% elif i.verb == 'error' %}
+							<i class="fas fa-bomb fa-2x"></i>
+						{% elif i.verb == 'reply' %}
+							<i class="fas fa-reply fa-2x"></i>
+						{% elif i.verb == 'like' %}
+							<i class="fas fa-thumbs-up fa-2x"></i>
+						{% elif i.verb == 'delete'%}
+							<i class="far fa-ban fa-2x"></i>
+						{% elif i.verb == 'role' %}
+							<i class="fas fa-id-badge fa-2x"></i>
+						{% elif i.verb == 'badge' %}
+							<i class="fas fa-user-tag fa-2x"></i>
+						{% elif i.verb == 'unhappy' %}
+							<i class="far fa-sad-tear fa-2x"></i>
+						{% endif %}
+					</div>
+				</div>
+				<div class="notification__desc">
+					<div>{{i.description|safe}}</div>
+					<div class="notification_time_ago">
+						<i class="far fa-clock fa-md"></i>
+						&nbsp;{{i.timestamp|timesince:now}} ago
+					</div>
+				</div>	
+			</div>
+		{% endfor %}	
+	</div>	
+{% endblock %}

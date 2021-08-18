@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+
+	<title>Error - 404 {{exc}}</title>
+</head>
+
+<body>
+	<div class="not_found">	
+		<div>
+			<h1>404</h1>
+		</div>
+		<div class="text">
+			<center>
+				{{ exc }}<br>
+				<a href="{% url 'home' %}">Return Home</a>
+			</center>
+		</div>
+	</div>
+
+
+	<style type="text/css">
+		html, body {
+			height: 100vh;
+			background-color: #14171a;
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.not_found {
+			padding: 0px 10px;
+			margin-bottom: 40px;
+		}
+
+		h1{
+			color: #fff;
+			font-size: 140px;
+			font-family: 'Russo One', sans-serif;
+			margin: 0px;
+		}
+
+		.text {
+			font-size: 16px;
+			font-family: 'Russo One', sans-serif;
+			color: #fff;
+		}
+
+		a {
+			display: block;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			color: #fff;
+			margin-top: 14px;
+			width: 130px;
+			height: 30px;
+			background-color: transparent;
+			border: 2px solid #fff;
+			border-radius: 5px;
+			transition: 0.5s;
+		}
+
+		a:hover {
+			transform: scale(1.06);
+		}
+
+	</style>
+</body>
+
+</html>

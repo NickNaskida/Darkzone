@@ -1,0 +1,48 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block page-name %}Terms & Rules{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'terms&rules' %}">Terms & Rules</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="page-title">
+		<center>Terms & Rules</center>
+	</div>
+	<div class="rules">
+		<span>Rules<br></span>
+		<ul>
+			<li>No Spam / Self-promote.</li>
+			<li>No Advertising without admin approval.</li>
+			<li>Do not post “offensive” posts, links or images.</li>
+			<li>Do not share malware, viruses & other.</li>
+			<li>Remain respectful of other members at all times.</li>
+			<li>Note that we don't take responsibility for your actions and all the materials are for educational purposes only.</li>
+		</ul>
+		<div>What happens if I break a rule?</div>
+		<ul>
+			<li>If you break a rule, then you will either be warned or banned. A ban of your user account may either be temporary or permanent. The administrators and moderators also have the right to edit, delete, move or close any thread or post as they see necessary, without prior warning.</li>
+			<li>if you see a thread/post which has broken a rule, please report the thread/post to the moderators or admin.</li>
+		</ul>
+		<span>Roles<br></span>
+		<ul>
+			<li>Roles are granted only by admins.</li>
+			<li>Roles are granted for certain achivements and acivity.</li>
+		</ul>
+		<div>Role descriptions</div>
+		<ul>
+			{% for i in roles %}
+				<li><span style="color: {{i.color}};">{{i.role}}</span> - {{ i.description }}</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}

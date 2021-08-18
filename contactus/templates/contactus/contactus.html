@@ -1,0 +1,33 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}Contact Us{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'contactus' %}">Contact Us</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="page-title">
+		<center>Contact Us</center>
+	</div>
+	<div class="contactus">
+		<div class="contact-form">
+			<form action="{% url 'contactus' %}" method="POST">
+				{% csrf_token %}
+				{{ form|crispy }}
+				<div class="send-butt">
+					<button class="send-email-butt" type="submit">Send Email <i class="far fa-paper-plane fa-md"></i></button>
+				</div>				
+			</form>			
+		</div>
+	</div>
+{% endblock %}

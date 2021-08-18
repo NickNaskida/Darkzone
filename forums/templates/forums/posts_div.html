@@ -1,0 +1,49 @@
+<div class="thread_posts_wrapper">
+	<div class="thread_posts_filter_bar">
+		<form method="get">
+			{{ filter.form }}
+			<button class="filter-butt" type="submit">Go</button>
+		</form>
+	</div>
+	{% for post in thread_posts %}
+		<a href="{% url 'thread_post' post.thread.category_thread_slug post.post_slug %}" class="thread_post_link">
+			<div class="main_thread thread_post {% if forloop.counter|divisibleby:2 %}even_post{% else %}odd_post{% endif %}">
+				<div class="post_avatar">
+					<img src="{{post.author.userprofile.avatar_pic.url }}" alt="post author avatar">
+				</div>
+				<div class="post_info">
+					<div class="post_title">
+						{{post.post_title}}
+						{% if post.post_prefix == 'Question' %}
+							(Question)
+						{% endif %}
+						{% if post.post_status == 'Closed' %}
+							<span class="closed_status_lock"><i class="fas fa-lock fa-sm"></i></span>
+						{% endif %}
+					</div>
+					<div class="post_info_other">
+						by {{post.author}} &nbsp; <i class="far fa-clock fa-md"></i> {{post.post_date|date:"d/b/y | H:i"}}
+					</div>
+				</div>
+				<div class="post_stats">
+					<div class="post_likes" title="Post likes amount">
+						<i class="fas fa-thumbs-up fa-md"></i> {{post.post_likes.all.count}}
+					</div>
+					<div class="post_replies" title="Post replies amount">
+						<i class="fas fa-comments fa-md"></i> {{post.post_replies.all.count}}
+					</div>
+				</div>
+				<div class="post_last_reply" title="Last reply">
+					{% if post.post_replies.last %}
+						<div class="post_last_reply_date">
+							<i class="fas fa-reply fa-md"></i> {{post.post_replies.last.reply_date|date:"d / b / y | H:i"}}
+						</div>
+						<div class="post_last_reply_author">
+							by {{post.post_replies.last.reply_author|truncatechars:"24"}}
+						</div>
+					{% endif %}						
+				</div>
+			</div>
+		</a>
+	{% endfor %}
+</div>

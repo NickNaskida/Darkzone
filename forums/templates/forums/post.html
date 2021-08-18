@@ -1,0 +1,456 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}{{item.post_title}}{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'forums' %}">Forums</a>
+	<span><i class="fas fa-angle-double-right"></i></span>
+	<a href="{% url 'forums' %}">{{item.thread.category.category_name}}</a>
+	<span><i class="fas fa-angle-double-right"></i></span>
+	<a href="{% url 'category_thread' item.thread.category_thread_slug %}">{{item.thread.category_thread_name}}</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'category_thread' item.thread.category_thread_slug %}">{{item.thread.category_thread_name}}</a> 
+{% endblock %}
+
+{% block content %}
+	<div class="post_header_title thread_title">
+		<div>
+			<span>
+				{{item.post_title}}
+				<small>
+					{% if item.post_prefix == 'Question' %}
+						(Question)
+					{% endif %}
+				</small>
+			</span>
+		</div>
+		{% if replies.count > 0 %}
+			<div class="go_to_last_reply">
+				<a href="#reply_{{last_reply.pk}}">
+					<i class="fas fa-arrow-alt-circle-down fa-md"></i> Last reply
+				</a>
+			</div>
+		{% endif %}	
+	</div>
+	
+	<!------------ Post ------------>	
+	<div class="post_wrapper">
+		<div class="post_sidebar">
+			<div class="post_sidebar__inner">
+				<a href="{% url 'profile' item.author.username %}" class="author_profile__link">
+					<div class="post_author__avatar">
+						<img src="{{item.author.userprofile.avatar_pic.url }}" alt="User avatar">
+						{% for user in online_users %}
+							{% if user.user == item.author %}
+								<div class="online-dot-static" title="Online now"></div>
+							{% endif %}	
+						{% endfor %}
+					</div>
+					<div class="post_author__username">
+						<span style="color: {{item.author.userrole.role.color}}">{{item.author}}</span>
+					</div>
+				</a>
+				{% if item.author.userbadge.all.count > 0 %}	
+					<div class="post_author__badges">
+						{% for badge in item.author.userbadge.all|slice:":4" %}
+							<div class="post_badge badge" style="background-color: {{badge.badge.color}}">
+								<span>{{ badge.badge }}</span>
+							</div>
+						{% endfor %}							
+					</div>
+				{% endif %}
+				<div class="post_author__stats">
+					{% if item.author.userrole.role %}
+						<div>
+							<i class="fas fa-user-tag"></i>&nbsp;&nbsp; {{item.author.userrole.role}}
+						</div>
+					{% endif %}	
+					<div>
+						<i class="fas fa-calendar-day"></i> &nbsp;&nbsp; {{item.author.date_joined|date:"d / b / y"}}
+					</div>
+					{% if item.author.userprofile.github %}
+						<div>
+							<i class="fab fa-github"></i> &nbsp;&nbsp;<a href="https://github.com/{{item.author.userprofile.github}}">{{item.author.userprofile.github}}</a>
+						</div>
+					{% endif %}	
+					<div>
+						<i class="fas fa-comment-alt fa-md"></i>&nbsp;&nbsp;  {{item.author.user_posts.all.count}}
+					</div>
+				</div>
+			</div>	
+		</div>
+		<div class="post_body">
+			<div class="post_body__topbar">
+				<div>
+					<i class="far fa-clock fa-md"></i> {{item.post_date|date:"d / b / Y | H:i"}}
+					{% if user.is_authenticated %}
+						{% if request.user == item.author or 'Moder can change post status' in permissions %}
+							&nbsp;&nbsp;&nbsp;&nbsp; status: {{item.post_status}}
+						{% endif %}
+					{% endif %}	
+				</div>
+				<div>#1</div>
+			</div>
+			<div class="post_body__tags">
+				{% for tag in item.post_tags.all %}
+					<div style="background-color: {{tag_colors_list|random}}">
+						{{tag}}
+					</div>
+				{% endfor %}
+			</div>
+			<div class="post_body__main">
+				<article>					
+					{{item.post_body|safe}}
+
+					{% if user.is_authenticated %}
+						{% if request.user == item.author %}
+							<div id="delete_post_form">
+								Delete Post ?&nbsp;
+								<button class="btn btn-sm btn-light" id="cancel_post_delete_butt">Cancel</button>
+								<form action="{% url 'delete_post' item.thread.category_thread_slug item.post_slug item.pk %}" method="POST">
+									{% csrf_token %}
+									<input class="btn btn-sm btn-danger" type="submit" name="Confirm" value="Delete">
+								</form>
+							</div>
+						{% endif %}
+					{% endif %}		
+				</article>
+			</div>
+
+			<div class="post_body__bottombar">
+				<div class="bottombar_post_likes">
+					<i class="fas fa-thumbs-up fa-md"></i>  
+					{% for user in item.post_likes.all %}
+						{% if item.post_likes.all.count == 2 %}
+							{% if not forloop.last %}
+								{{user.username}} and
+							{% else %}
+								{{user.username}}
+							{% endif %}	
+						{% else %} 
+							{% if forloop.counter < 3 %}
+								{% if item.post_likes.all.count == 1 %}
+									{{ user.username }}
+								{% else %}
+									{{ user.username }}{% if not forloop.counter == 2 %}, {% endif %}
+								{% endif %}	
+							{% endif %}
+						{% endif %}			
+					{% empty %}
+						0 Likes	
+					{% endfor %}
+					{% if item.post_likes.all.count > 2 %}
+						and {{item.post_likes.all.count|add:'-2'}} other
+					{% endif %}
+				</div>
+				{% if user.is_authenticated %}
+					<div class="bottombar_post_actions">
+						{% if request.user in item.post_likes.all %}
+							<div>
+								<form action="{% url 'unlike_post' item.thread.category_thread_slug item.post_slug item.id %}" method="POST">
+									{% csrf_token %}
+									<button type="submit" class="action_butt"><i class="fas fa-times fa-md"></i> Remove Like</button>
+								</form>
+							</div>
+						{% else %}
+							<div>
+								<form action="{% url 'like_post' item.thread.category_thread_slug item.post_slug item.id %}" method="POST">
+									{% csrf_token %}
+									<button type="submit" class="action_butt"><i class="fas fa-thumbs-up fa-md"></i> Like</button>
+								</form>
+							</div>	
+						{% endif %}
+
+						{% if request.user == item.author or 'Moder can change post status' in permissions %}
+							<div>
+								<form action="{% url 'change_post_status' item.thread.category_thread_slug item.post_slug item.id %}" method="POST">
+								{% csrf_token %}
+									<button type="submit" class="action_butt"><i class="fas fa-sync-alt fa-md"></i> Change Status</button>
+								</form>
+							</div>	 
+						{% endif %}
+						
+						{% if request.user == item.author %}
+							<div>
+								<button class="action_butt">
+									<a href="{% url 'edit_post' item.thread.category_thread_slug item.post_slug item.pk %}">
+										<i class="far fa-pen fa-md"></i> Edit
+									</a>	
+								</button>
+							</div>
+							<div>
+								<button class="action_butt" id="delete_post_butt">
+									<i class="far fa-trash-alt fa-md"></i> Delete
+								</button>
+							</div>	
+						{% endif %}
+						{% if 'Moder can delete post' in permissions %}
+							{% if item.author.is_superuser %}
+							{% else %}								
+								{% if request.user != item.author %}
+									<div>
+										<button class="action_butt">
+											<a href="{% url 'remove_post' item.thread.category_thread_slug item.post_slug item.pk %}">
+												<i class="far fa-times-circle fa-md"></i> Remove Post
+											</a>
+										</button>
+									</div>
+								{% endif %}								
+							{% endif %}			
+						{% endif %}	
+					</div>
+				{% endif %}		
+			</div>
+		</div>	
+	</div>
+	
+	{% if user.is_authenticated %}
+		{% if request.user == item.author %}	
+			<script type="text/javascript" src="{% static 'main/js/delete_post.js' %}"></script>
+		{% endif %}	
+	{% endif %}		
+
+	<!------------ Replies ------------>
+	{% for reply in replies %}
+		<div class="post_wrapper" id="reply_{{reply.id}}">
+			<div class="post_sidebar">
+				<div class="post_sidebar__inner">
+					<a href="{% url 'profile' reply.reply_author.username %}" class="author_profile__link">
+						<div class="post_author__avatar">
+							<img src="{{reply.reply_author.userprofile.avatar_pic.url }}" alt="User avatar">
+							{% for user in online_users %}
+								{% if user.user == reply.reply_author %}
+									<div class="online-dot-static" title="Online now"></div>
+								{% endif %}	
+							{% endfor %}
+						</div>
+						<div class="post_author__username">
+							<span style="color: {{reply.reply_author.userrole.role.color}}">{{reply.reply_author}}</span>
+						</div>
+					</a>
+					{% if reply.reply_author.userbadge.all.count > 0 %}	
+						<div class="post_author__badges">
+							{% for badge in reply.reply_author.userbadge.all|slice:":4" %}
+								<div class="post_badge badge" style="background-color: {{badge.badge.color}}">
+									<span>{{ badge.badge }}</span>
+								</div>
+							{% endfor %}							
+						</div>
+					{% endif %}
+					<div class="post_author__stats">
+						{% if reply.reply_author.userrole.role %}
+							<div>
+								<i class="fas fa-user-tag"></i>&nbsp;&nbsp; {{reply.reply_author.userrole.role}}
+							</div>
+						{% endif %}	
+						<div>
+							<i class="fas fa-calendar-day"></i> &nbsp;&nbsp; {{reply.reply_author.date_joined|date:"d / b / y"}}
+						</div>
+						{% if reply.reply_author.userprofile.github %}
+							<div>
+								<i class="fab fa-github"></i> &nbsp;&nbsp;<a href="https://github.com/{{reply.reply_author.userprofile.github}}">{{reply.reply_author.userprofile.github}}</a>
+							</div>
+						{% endif %}	
+						<div>
+							<i class="fas fa-comment-alt fa-md"></i>&nbsp;&nbsp;  {{reply.reply_author.user_posts.all.count}}
+						</div>
+					</div>
+				</div>	
+			</div>
+			<div class="post_body">
+				<div class="post_body__topbar">
+					<div><i class="far fa-clock fa-md"></i> {{reply.reply_date|date:"d / b / Y | H:i"}}</div>
+					<div>
+						{% if reply.pk in new_replies %}
+							<div class="new_post_badge">
+								New	
+							</div>
+						{% endif %}
+						<div>
+							#{{forloop.counter|add:"1"}}
+						</div>
+					</div>
+				</div>
+				<div class="post_body__main">
+					{% if reply.reply_parent %}
+						<div class="reply_block">
+							<div class="reply_block_header">
+								Reply to <a href="{% url 'profile' reply.reply_parent.reply_author.username %}">&nbsp;{{reply.reply_parent.reply_author.username}}&nbsp;</a>
+							</div>
+							<a href="#reply_{{reply.reply_parent.id}}">	
+								<div>
+									{{reply.reply_parent.reply_body|safe|truncatewords:80}}
+								</div>
+							</a>	
+						</div>
+					{% endif %}
+					<article>					
+						{{reply.reply_body|safe}}
+
+						{% if user.is_authenticated %}
+							{% if request.user == reply.reply_author %}
+								<div class="delete_reply_form" id="delete_reply_form_{{reply.pk}}">
+									Delete Reply ?&nbsp;
+									<button class="btn btn-sm btn-light" id="cancel_reply_delete_butt_{{reply.pk}}">Cancel</button>
+									<form action="{% url 'delete_reply' reply.post.thread.category_thread_slug reply.post.post_slug reply.pk %}" method="POST">
+										{% csrf_token %}
+										<input class="btn btn-sm btn-danger" type="submit" name="Confirm" value="Delete">
+									</form>
+								</div>
+							{% endif %}
+						{% endif %}					
+					</article>
+				</div>
+				<div class="post_body__bottombar">
+					<div class="bottombar_post_likes">
+						<i class="fas fa-thumbs-up fa-md"></i>  
+						{% for user in reply.reply_likes.all %}
+							{% if reply.reply_likes.all.count == 2 %}
+								{% if not forloop.last %}
+									{{user.username}} and
+								{% else %}
+									{{user.username}}
+								{% endif %}	
+							{% else %} 
+								{% if forloop.counter < 3 %}
+									{% if reply.reply_likes.all.count == 1 %}
+										{{ user.username }}
+									{% else %}
+										{{ user.username }}{% if not forloop.counter == 2 %}, {% endif %}
+									{% endif %}	
+								{% endif %}
+							{% endif %}			
+						{% empty %}
+							0 Likes	
+						{% endfor %}
+						{% if reply.reply_likes.all.count > 2 %}
+							and {{reply.reply_likes.all.count|add:'-2'}} other
+						{% endif %}
+					</div>
+					<div class="bottombar_post_actions">
+						{% if item.post_status == 'Open' %}
+							{% if 'Can add Post Reply' in permissions %}
+								<div>
+									<form action="{% url 'reply' reply.post.thread.category_thread_slug reply.post.post_slug reply.id %}" method="POST">
+										{% csrf_token %}
+										<button class="action_butt"><i class="fas fa-reply"></i> Reply</button>
+									</form>
+								</div>	
+							{% endif %}
+						{% endif %}
+
+						{% if user.is_authenticated %}
+							{% if request.user in reply.reply_likes.all %}
+								<div>
+									<form action="{% url 'unlike_reply' reply.post.thread.category_thread_slug reply.post.post_slug reply.id %}" method="POST">
+										{% csrf_token %}
+										<button type="submit" class="action_butt"><i class="fas fa-times fa-md"></i> Remove Like</button>
+									</form>
+								</div>	
+							{% else %}
+								<div>
+									<form action="{% url 'like_reply' reply.post.thread.category_thread_slug reply.post.post_slug reply.id %}" method="POST">
+										{% csrf_token %}
+										<button type="submit" class="action_butt"><i class="fas fa-thumbs-up fa-md"></i> Like</button>
+									</form>
+								</div>	
+							{% endif %}
+						{% endif %}		
+						
+
+						{% if user.is_authenticated %}
+							{% if request.user == reply.reply_author %}
+								<div>
+									<button class="action_butt">
+										<a href="{% url 'edit_reply' reply.post.thread.category_thread_slug reply.post.post_slug reply.pk %}">
+											<i class="far fa-pen fa-md"></i> Edit
+										</a>	
+									</button>
+								</div>
+								<div>
+									<button class="action_butt" id="delete_reply_butt_{{reply.pk}}">
+										<i class="far fa-trash-alt fa-md"></i> Delete
+									</button>
+								</div>	
+							{% endif %}
+						{% endif %}
+
+						{% if user.is_authenticated %}
+							{% if 'Moder can delete reply' in permissions %}
+								{% if reply.reply_author.is_superuser %}
+								{% else %}
+									{% if request.user != reply.reply_author %}
+										<div>
+											<button class="action_butt">
+												<a href="{% url 'remove_reply' reply.post.thread.category_thread_slug reply.post.post_slug reply.pk %}">
+													<i class="far fa-times-circle fa-md"></i> Remove Reply
+												</a>
+											</button>
+										</div>
+									{% endif %}
+								{% endif %}	
+							{% endif %}
+						{% endif %}
+
+						{% if user.is_authenticated %}
+							{% if request.user == reply.reply_author %}	
+								<script type="text/javascript">
+									var deleteButt{{reply.pk}} = document.getElementById("delete_reply_butt_{{reply.pk}}")
+									var cancelButt{{reply.pk}} = document.getElementById("cancel_reply_delete_butt_{{reply.pk}}")
+									var deleteForm{{reply.pk}} = document.getElementById("delete_reply_form_{{reply.pk}}")
+
+									deleteButt{{reply.pk}}.addEventListener("click", function () {
+									        deleteButt{{reply.pk}}.style.display = "none";
+									        cancelButt{{reply.pk}}.style.display = "block";
+									        deleteForm{{reply.pk}}.style.display = "flex";  
+									   	});
+
+
+									cancelButt{{reply.pk}}.addEventListener("click", function () {
+									        deleteButt{{reply.pk}}.style.display = "block";
+									        cancelButt{{reply.pk}}.style.display = "none";
+									        deleteForm{{reply.pk}}.style.display = "none";   
+									   	});
+								</script>
+							{% endif %}	
+						{% endif %}		
+					</div>
+				</div>
+			</div>	
+		</div>
+	{% endfor %}		
+
+	<hr class="post_hr">
+	{% if user.is_authenticated %}
+		{% if item.post_status == 'Open' %}
+			{% if 'Can add Post Reply' in permissions %}
+				<div class="new_post_butt" id="add_reply_butt">
+					<button class="button-style"><i class="fas fa-plus"></i> Add Reply</button>
+				</div>
+				<div class="add_post_form" id="add_reply_form">
+					<form method="POST">						
+						{% csrf_token %}
+						{{ form|crispy }}
+						{{ form.media }}
+						<button class="button-style" type="submit">Add Reply</button>
+					</form>
+				</div>
+
+				<script type="text/javascript" src="{% static 'main/js/add_reply.js' %}"></script>					
+			{% else %}
+				<h6 class="post_hr_after_text" style="text-align: right;">You don't have enough priviledge to reply here</h6>
+			{% endif %}
+		{% else %}
+			<h6 class="post_hr_after_text" style="text-align: right;">This post is closed for further replies</h6>
+		{% endif %}			
+	{% else %}
+		<h6 class="post_hr_after_text" style="text-align: right;">You have to be authenticated to reply here</h6>	
+	{% endif %}
+{% endblock %}

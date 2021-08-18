@@ -1,0 +1,134 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}{{item.post_title}}{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'forums' %}">Forums</a>
+	<span><i class="fas fa-angle-double-right"></i></span>
+	<a href="{% url 'forums' %}">{{item.thread.category.category_name}}</a>
+	<span><i class="fas fa-angle-double-right"></i></span>
+	<a href="{% url 'category_thread' item.thread.category_thread_slug %}">{{item.thread.category_thread_name}}</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'category_thread' item.thread.category_thread_slug %}">{{item.thread.category_thread_name}}</a>
+{% endblock %}
+
+{% block content %}
+	<div class="post_wrapper">
+		<div class="post_sidebar">
+			<div class="post_sidebar__inner">
+				<a href="{% url 'profile' reply.reply_author.username %}" class="author_profile__link">
+					<div class="post_author__avatar">
+						<img src="{{reply.reply_author.userprofile.avatar_pic.url }}" alt="User avatar">
+						{% for user in online_users %}
+							{% if user.user == reply.reply_author %}
+								<div class="online-dot-static" title="Online now"></div>
+							{% endif %}	
+						{% endfor %}
+					</div>
+					<div class="post_author__username">
+						<span style="color: {{reply.reply_author.userrole.role.color}}">{{reply.reply_author}}</span>
+					</div>
+				</a>
+				{% if reply.reply_author.userbadge.all.count > 0 %}	
+					<div class="post_author__badges">
+						{% for badge in reply.reply_author.userbadge.all|slice:":4" %}
+							<div class="post_badge badge" style="background-color: {{badge.badge.color}}">
+								<span>{{ badge.badge }}</span>
+							</div>
+						{% endfor %}							
+					</div>
+				{% endif %}
+				<div class="post_author__stats">
+					{% if reply.reply_author.userrole.role %}
+						<div>
+							<i class="fas fa-user-tag"></i>&nbsp;&nbsp; {{reply.reply_author.userrole.role}}
+						</div>
+					{% endif %}	
+					<div>
+						<i class="fas fa-calendar-day"></i> &nbsp;&nbsp; {{reply.reply_author.date_joined|date:"d / b / y"}}
+					</div>
+					{% if reply.reply_author.userprofile.github %}
+						<div>
+							<i class="fab fa-github"></i> &nbsp;&nbsp;<a href="https://github.com/{{reply.reply_author.userprofile.github}}">{{reply.reply_author.userprofile.github}}</a>
+						</div>
+					{% endif %}
+					<div>
+						<i class="fas fa-comment-alt fa-md"></i>&nbsp;&nbsp;  {{reply.reply_author.user_posts.all.count}}
+					</div>
+				</div>
+			</div>	
+		</div>
+		<div class="post_body">
+			<div class="post_body__topbar">
+				<div><i class="far fa-clock fa-md"></i> {{reply.reply_date|date:"d / b / Y | H:i"}}</div>
+				<div></div>
+			</div>
+			<div class="post_body__main">
+				{% if reply.reply_parent %}
+					<div class="reply_block">
+						<div class="reply_block_header">
+							Reply to <a href="{% url 'profile' reply.reply_parent.reply_author.username %}">&nbsp;{{reply.reply_parent.reply_author.username}}&nbsp;</a>
+						</div>
+						<a href="#reply_{{reply.reply_parent.id}}">	
+							<div>
+								{{reply.reply_parent.reply_body|safe|truncatewords:80}}
+							</div>
+						</a>	
+					</div>
+				{% endif %}
+				<article>					
+					{{reply.reply_body|safe}}					
+				</article>
+			</div>
+			<div class="post_body__bottombar">
+				<div class="bottombar_post_likes">
+					<i class="fas fa-thumbs-up fa-md"></i>  
+					{% for user in reply.reply_likes.all %}
+						{% if reply.reply_likes.all.count == 2 %}
+							{% if not forloop.last %}
+								{{user.username}} and
+							{% else %}
+								{{user.username}}
+							{% endif %}	
+						{% else %} 
+							{% if forloop.counter < 3 %}
+								{% if reply.reply_likes.all.count == 1 %}
+									{{ user.username }}
+								{% else %}
+									{{ user.username }}{% if not forloop.counter == 2 %}, {% endif %}
+								{% endif %}	
+							{% endif %}
+						{% endif %}			
+					{% empty %}
+						0 Likes	
+					{% endfor %}
+					{% if reply.reply_likes.all.count > 2 %}
+						and {{reply.reply_likes.all.count|add:'-2'}} other
+					{% endif %}
+				</div>
+				<div class="bottombar_post_actions">
+					<form>
+						<button type="submit" class="action_butt"><a href="{% url 'thread_post' reply.post.thread.category_thread_slug reply.post.post_slug %}"><i class="fas fa-times fa-md"></i> Cancel Remove</a></button>
+					</form>		
+				</div>
+			</div>
+		</div>	
+	</div>
+
+	<hr class="post_hr">
+	<div>
+		<form method="POST">						
+			{% csrf_token %}
+			{{ form|crispy }}
+			<br>
+			<button class="button-style" type="submit">Remove</button>
+		</form>
+	</div>
+{% endblock %}

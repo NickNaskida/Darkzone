@@ -1,0 +1,79 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block page-name %}Homepage{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<a href="{% url 'home' %}">Home</a> 	
+{% endblock %}
+
+{% block content %}
+	<div class="main__wrapper">
+		<div class="main__block1">
+			<h4>Greetings {{user_ip}}, welcome to the DarkZone</h4>
+			<div class="server_time">
+				{{server_time|date:"d / b / Y H:i"}}
+			</div>
+		</div><br>
+		<div class="main__block2">
+			<div class="last_posts__block">
+				<h6><i class="fas fa-comment-alt"></i> Latest Posts </h6>
+				{% for post in last_posts %}
+					<div class="last_post__box">
+						<div class="last_post__author">
+							<img src="{{post.author.userprofile.avatar_pic.url }}" alt="User avatar">
+						</div>
+						<div class="last_post__body">
+							<div class="last_post__title">
+								<a href="{% url 'thread_post' post.thread.category_thread_slug post.post_slug %}">{{post.post_title}}</a>
+							</div>
+							<div class="last_post__other">
+								by {{post.author}} at <a href="{% url 'category_thread' post.thread.category_thread_slug %}">{{post.thread}}</a> &nbsp;&nbsp;<i class="far fa-clock fa-md"></i> {{post.post_date|timesince:server_time}} ago
+							</div>
+						</div>
+					</div>		
+				{% endfor %}					
+			</div>
+			<div class="popular_tags__block">
+				<h6><i class="fas fa-tags"></i> Popular Tags</h6>
+				<div class="popular_tags">
+					{% for tag in popular_tags %}
+						<a href="">
+							<div style="background-color: {{tag_colors_list|random}}">
+								{{tag}}
+							</div>
+						</a>
+					{% endfor %}
+				</div>
+			</div>				
+		</div>
+		<br>
+		<div class="main__block3">
+			<div class="statistics">
+				<h6><i class="fas fa-chart-line"></i> Forum Statistics </h6>
+				<div class="stats-list">
+					<div class="stats-list-item">
+						<div class="list-num">{{threads}}</div>
+						<div class="list-name">Threads</div>
+					</div>
+					<div class="stats-list-item">
+						<div class="list-num">{{posts}}</div>
+						<div class="list-name">Posts</div>			 
+					</div>
+					<div class="stats-list-item">
+						<div class="list-num">{{replies}}</div>
+						<div class="list-name">Replies</div>		
+					</div>	
+					<div class="stats-list-item">
+						<div class="list-num">{{users}}</div> 
+						<div class="list-name">Members</div>		
+					</div>						
+				</div>						
+			</div>
+		</div>  	
+	</div>	
+{% endblock %}

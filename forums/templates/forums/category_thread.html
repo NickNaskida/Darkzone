@@ -1,0 +1,199 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}{{item.category_thread_name}}{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'forums' %}">Forums</a>
+	<span><i class="fas fa-angle-double-right"></i></span>
+	<a href="{% url 'forums' %}">{{item.category.category_name}}</a>
+	<span><i class="fas fa-angle-double-right"></i></span>
+	<a href="{% url 'category_thread' item.category_thread_slug %}">{{item.category_thread_name}}</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'forums' %}">{{item.category.category_name}}</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="thread_title">
+		<span>{{item.category_thread_name}}</span>
+		{% if user.is_authenticated %}
+			{% if 'Can change Main Thread' in permissions %}
+				<a href="{% url 'edit_category_thread' item.pk %}" class="edit_category_thread">
+					<i class="far fa-pen fa-lg"></i>
+				</a>	
+			{% endif %}
+		{% endif %}
+	</div>
+
+	{% if item.category_thread_type == 'Private' %}
+		{% if 'Can view private thread' in permissions %}
+			{% if page_nums|length != 1 %}
+				<div class="paginator_wrapper top_paginator">
+					<nav aria-label="Page navigation example">
+					  	<ul class="pagination pagination-sm">
+						    {% if thread_posts.has_previous %}
+								<li class="page-item"><a class="page-link" href="?page={{thread_posts.previous_page_number}}"><i class="fas fa-caret-left"></i> Prev</a></li>
+							{% endif %}
+
+							{% if thread_posts.number|add:'-3' > 1 %}
+					            <li class="page-item"><a class="page-link" href="?page={{ thread_posts.number|add:'-4' }}">&hellip;</a></li>
+					        {% endif %}
+
+							{% for i in page_nums %}
+								{% if thread_posts.number == forloop.counter %}
+									<li class="page-item"><a class="page-link {% if thread_posts.number == forloop.counter %}active{% endif %}" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+								{% elif forloop.counter > thread_posts.number|add:'-4' and forloop.counter < thread_posts.number|add:'4' %}
+					                <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+					            {% endif %}					
+								{% endfor %}
+
+							{% if thread_posts.paginator.num_pages > thread_posts.number|add:'3' %}
+			           			<li class="page-item"><a class="page-link" href="?page={{ thread_posts.number|add:'4' }}">&hellip;</a></li>
+			        		{% endif %}
+
+
+							{% if thread_posts.has_next %}
+								<li class="page-item"><a class="page-link" href="?page={{thread_posts.next_page_number}}">Next <i class="fas fa-caret-right"></i></a></li>
+							{% endif %}
+					  	</ul>
+					</nav> 
+				</div>
+			{% endif %}	
+
+			{% include 'forums/posts_div.html' %}
+
+			{% if page_nums|length != 1 %}
+				<div class="paginator_wrapper bottom_paginator">
+					<nav aria-label="Page navigation example">
+					  	<ul class="pagination pagination-sm">
+						    {% if thread_posts.has_previous %}
+								<li class="page-item"><a class="page-link" href="?page={{thread_posts.previous_page_number}}"><i class="fas fa-caret-left"></i> Prev</a></li>
+							{% endif %}
+
+							{% if thread_posts.number|add:'-3' > 1 %}
+					            <li class="page-item"><a class="page-link" href="?page={{ thread_posts.number|add:'-4' }}">&hellip;</a></li>
+					        {% endif %}
+
+							{% for i in page_nums %}
+								{% if thread_posts.number == forloop.counter %}
+									<li class="page-item"><a class="page-link {% if thread_posts.number == forloop.counter %}active{% endif %}" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+								{% elif forloop.counter > thread_posts.number|add:'-4' and forloop.counter < thread_posts.number|add:'4' %}
+					                <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+					            {% endif %}					
+								{% endfor %}
+
+							{% if thread_posts.paginator.num_pages > thread_posts.number|add:'3' %}
+			           			<li class="page-item"><a class="page-link" href="?page={{ thread_posts.number|add:'4' }}">&hellip;</a></li>
+			        		{% endif %}
+
+
+							{% if thread_posts.has_next %}
+								<li class="page-item"><a class="page-link" href="?page={{thread_posts.next_page_number}}">Next <i class="fas fa-caret-right"></i></a></li>
+							{% endif %}
+					  	</ul>
+					</nav>	
+				</div>
+			{% endif %}
+
+			<hr>
+			{% if user.is_authenticated %}
+				{% if 'Can add Thread Post' in permissions %}
+					{% include 'forums/post_form.html' %}
+				{% else %}
+					<h6 style="text-align: right;">You don't have enough priviledge to post here</h6>
+				{% endif %}	
+			{% else %}
+				<h6 style="text-align: right;">You have to be authenticated to post here</h6>
+			{% endif %}
+		{% else %}
+			<div class="private_thread"></div>
+			<hr>
+			<h6 style="text-align: right;">You don't have access to this part of a forum</h6>	
+		{% endif %}
+	{% else %}
+		{% if page_nums|length != 1 %}
+			<div class="paginator_wrapper top_paginator">
+				<nav aria-label="Page navigation example">
+				  	<ul class="pagination pagination-sm">
+					    {% if thread_posts.has_previous %}
+							<li class="page-item"><a class="page-link" href="?page={{thread_posts.previous_page_number}}"><i class="fas fa-caret-left"></i> Prev</a></li>
+						{% endif %}
+
+						{% if thread_posts.number|add:'-3' > 1 %}
+				            <li class="page-item"><a class="page-link" href="?page={{ thread_posts.number|add:'-4' }}">&hellip;</a></li>
+				        {% endif %}
+
+						{% for i in page_nums %}
+							{% if thread_posts.number == forloop.counter %}
+								<li class="page-item"><a class="page-link {% if thread_posts.number == forloop.counter %}active{% endif %}" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+							{% elif forloop.counter > thread_posts.number|add:'-4' and forloop.counter < thread_posts.number|add:'4' %}
+				                <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+				            {% endif %}					
+							{% endfor %}
+
+						{% if thread_posts.paginator.num_pages > thread_posts.number|add:'3' %}
+		           			<li class="page-item"><a class="page-link" href="?page={{ thread_posts.number|add:'4' }}">&hellip;</a></li>
+		        		{% endif %}
+
+
+						{% if thread_posts.has_next %}
+							<li class="page-item"><a class="page-link" href="?page={{thread_posts.next_page_number}}">Next <i class="fas fa-caret-right"></i></a></li>
+						{% endif %}
+				  	</ul>
+				</nav> 
+			</div>
+		{% endif %}	
+
+		{% include 'forums/posts_div.html' %}
+
+		{% if page_nums|length != 1 %}
+			<div class="paginator_wrapper bottom_paginator">
+				<nav aria-label="Page navigation example">
+				  	<ul class="pagination pagination-sm">
+					    {% if thread_posts.has_previous %}
+							<li class="page-item"><a class="page-link" href="?page={{thread_posts.previous_page_number}}"><i class="fas fa-caret-left"></i> Prev</a></li>
+						{% endif %}
+
+						{% if thread_posts.number|add:'-3' > 1 %}
+				            <li class="page-item"><a class="page-link" href="?page={{ thread_posts.number|add:'-4' }}">&hellip;</a></li>
+				        {% endif %}
+
+						{% for i in page_nums %}
+							{% if thread_posts.number == forloop.counter %}
+								<li class="page-item"><a class="page-link {% if thread_posts.number == forloop.counter %}active{% endif %}" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+							{% elif forloop.counter > thread_posts.number|add:'-4' and forloop.counter < thread_posts.number|add:'4' %}
+				                <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+				            {% endif %}					
+							{% endfor %}
+
+						{% if thread_posts.paginator.num_pages > thread_posts.number|add:'3' %}
+		           			<li class="page-item"><a class="page-link" href="?page={{ thread_posts.number|add:'4' }}">&hellip;</a></li>
+		        		{% endif %}
+
+
+						{% if thread_posts.has_next %}
+							<li class="page-item"><a class="page-link" href="?page={{thread_posts.next_page_number}}">Next <i class="fas fa-caret-right"></i></a></li>
+						{% endif %}
+				  	</ul>
+				</nav>	
+			</div>
+		{% endif %}
+
+		<hr>
+		{% if user.is_authenticated %}
+			{% if 'Can add Thread Post' in permissions %}
+				{% include 'forums/post_form.html' %}
+			{% else %}
+				<h6 style="text-align: right;">You don't have enough priviledge to post here</h6>
+			{% endif %}	
+		{% else %}
+			<h6 style="text-align: right;">You have to be authenticated to post here</h6>
+		{% endif %}	
+	{% endif %}					
+{% endblock %}

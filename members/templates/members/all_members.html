@@ -1,0 +1,77 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}All Members{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'members' %}">Members</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'all_members' %}">All Members</a>  
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'members' %}">Members</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="all_members__wrapper">
+		<h5>All members</h5>
+		<br>
+		<div class="all_users_list">
+			{% for user in users %}
+				<a href="{% url 'profile' user.username %}">
+					<div class="all_users_box">
+						<div class="all_users_box__img">
+							<img src="{{user.userprofile.avatar_pic.url }}" alt="User avatar">
+						</div>
+						<div class="all_users_box__data">
+							<div class="all_users_box__username">
+								<span style="color: {{user.userrole.role.color}};">{{user.username}}</span>
+							</div>
+							<div class="all_users_box__other">
+								joined {{user.date_joined|timesince:now}} ago
+							</div>
+						</div>
+					</div>
+				</a>	
+			{% endfor %}
+		</div>
+
+		{% if page_nums|length != 1 %}
+			<div class="paginator_wrapper top_paginator">
+				<nav aria-label="Page navigation example">
+				  	<ul class="pagination pagination-sm">
+					    {% if users.has_previous %}
+							<li class="page-item"><a class="page-link" href="?page={{users.previous_page_number}}"><i class="fas fa-caret-left"></i> Prev</a></li>
+						{% endif %}
+
+						{% if users.number|add:'-3' > 1 %}
+				            <li class="page-item"><a class="page-link" href="?page={{ users.number|add:'-4' }}">&hellip;</a></li>
+				        {% endif %}
+
+						{% for i in page_nums %}
+							{% if users.number == forloop.counter %}
+								<li class="page-item"><a class="page-link {% if users.number == forloop.counter %}active{% endif %}" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+							{% elif forloop.counter > users.number|add:'-4' and forloop.counter < users.number|add:'4' %}
+				                <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+				            {% endif %}					
+							{% endfor %}
+
+						{% if users.paginator.num_pages > users.number|add:'3' %}
+		           			<li class="page-item"><a class="page-link" href="?page={{ users.number|add:'4' }}">&hellip;</a></li>
+		        		{% endif %}
+
+
+						{% if users.has_next %}
+							<li class="page-item"><a class="page-link" href="?page={{users.next_page_number}}">Next <i class="fas fa-caret-right"></i></a></li>
+						{% endif %}
+				  	</ul>
+				</nav>	
+			</div>
+		{% endif %}
+	</div>	
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block page-name %}Logout{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'logout' %}">Logout </a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="block__wrapper">
+		<div class="logout_wrapper">
+			<center>
+				<span>You have been logged out</span>
+				<div class="logout-small-text">
+					<small class="text-muted">
+						<a class="loginagain" href="{% url 'login' %}">Log in again</a>
+					</small>
+				</div>
+			</center>
+		</div>	
+	</div>							
+{% endblock %}

@@ -1,0 +1,334 @@
+{% load static %}
+{% load notifications_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="referrer" content="no-referrer-when-downgrade">
+	<meta name="description" content="Cyber Forum DarkZone, Cyber Security, Hacking, Free Soft, Database Leaks and other cool stuff for free 24/7.">
+	<meta name="keywords" content="Cyber forum, Cyber security, Hacking, Free soft, Cyber community, Cracking">
+	<meta name="robots" content="all">
+	<meta name="Author" content="Nikoloz Naskidashvili">
+	<meta name="Copyright" content="Nikoloz Naskidashvili">
+	<meta name="Address" content="Georgia, Tbilisi">
+	<meta property="og:locale" content="ka-GE">
+	<meta property="og:type" content="article">
+	<meta property="og:title" content="DarkZone">
+	<meta property="og:description" content="Cyber Forum DarkZone, Cyber Security, Hacking, Free Soft, Database Leaks and other cool stuff for free 24/7.">
+	<meta property="og:image" content="http://192.168.0.112:8000/static/main/img/banner.png">
+	<meta property="og:url" content="https://darkzone.">
+	<meta property="og:site_name" content="DarkZone">
+
+	<title>{% block page-name %}{% endblock %} | DARKZONE</title>
+
+	<!--------- jquery --------->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<!--------- bootstrap ---------->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+	<!--------- fontsawesome ---------->	
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+	<!--------- highlight.js ---------->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/github-dark.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+
+	<!--------- static ---------->
+	<link rel="icon" type="image/svg" href="{% static 'main/img/Logo.png' %}"/>
+	<link rel="stylesheet"  href="{% static 'main/css/style.css' %}">
+
+	<!--------- fonts ---------->
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
+
+	<!--------- Chat --------->
+	<script id="chatBroEmbedCode">
+		/* Chatbro Widget Embed Code Start */
+		function ChatbroLoader(chats,async){async=!1!==async;var params={embedChatsParameters:chats instanceof Array?chats:[chats],lang:navigator.language||navigator.userLanguage,needLoadCode:'undefined'==typeof Chatbro,embedParamsVersion:localStorage.embedParamsVersion,chatbroScriptVersion:localStorage.chatbroScriptVersion},xhr=new XMLHttpRequest;xhr.withCredentials=!0,xhr.onload=function(){eval(xhr.responseText)},xhr.onerror=function(){console.error('Chatbro loading error')},xhr.open('GET','//www.chatbro.com/embed.js?'+btoa(unescape(encodeURIComponent(JSON.stringify(params)))),async),xhr.send()}
+		/* Chatbro Widget Embed Code End */
+		ChatbroLoader({
+			encodedChatId: '08DV5',
+			{% if user.is_authenticated %}
+				siteDomain: '192.168.0.11', 
+				siteUserExternalId: '{{request.user.id}}', 
+				siteUserFullName: '{{ request.user.username }}',
+				siteUserFullNameColor: 
+				{% if request.user.userrole.role.color %}'{{request.user.userrole.role.color}}',{% else %}'#fff',{% endif %}		 
+				siteUserAvatarUrl: 'http://192.168.0.11{{request.user.userprofile.avatar_pic.url}}', 
+				siteUserProfileUrl: '{% url 'profile' request.user %}',
+			{% endif %}	
+		});
+	</script>
+</head>
+
+<body>
+	<!-- ================ HEADER ================ -->
+	<header>
+		<div class="container">
+			<div class="header__inner">
+			<div class="header__left">
+				<div class="header__logo">
+					<img src="{% static 'main/img/logo.svg' %}" alt="Lock">
+				</div>
+				<div class="header__name">			
+					<a href="{% url 'home' %}">DARKZONE</a>
+					<small>Cyber Forum</small>
+				</div>
+			</div>	
+				<nav class="header__navbar">
+					{% if user.is_authenticated %}
+						{% notifications_unread as unread_count %}	
+						<a href="{% url 'notifications' %}" class="header_notification__butt">
+							<i class="far fa-bell"></i> 
+							{% live_notify_badge %}
+						</a>
+						<a href="{% url 'logout' %}" class="header_logout__butt" id="logout">Logout</a>
+					{% else %}
+						<a href="{% url 'login' %}" class="header_login__butt" id="login">Login</a>
+						<a href="{% url 'signup' %}" class="header_signup__butt" id="signup">Sign Up</a>
+					{% endif %}
+					<span class="burger" id="burger"><i class="fas fa-bars fa-lg"></i></span>
+				</nav>
+			</div>
+		</div>
+	</header>
+
+	<!-- ================ CONTENT ================ -->
+	<main>
+		<div class="container">	
+			<aside>
+				<div class="aside__inner">
+					<div class="sidebar__navbar">
+						<span>Navigation<br></span>
+						<nav class="sidebar__nav">
+							<div class="sidebar__nav__item">
+								<img src="{% static 'main/img/home.svg' %}" alt="home">
+								<a href="{% url 'home' %}" class="sidebar__nav__link">Home</a>
+							</div>
+							<div class="sidebar__nav__item">
+								<img src="{% static 'main/img/forum.svg' %}" alt="forum">
+								<a href="{% url 'forums' %}" class="sidebar__nav__link">Forums</a>
+							</div>
+							<div class="sidebar__nav__item">
+								<img src="{% static 'main/img/members.svg' %}" alt="members">
+								<a href="{% url 'members' %}" class="sidebar__nav__link">Members</a>
+							</div>
+							{% if user.is_authenticated %}
+								<div class="sidebar__nav__item">
+									<img src="{% static 'main/img/myprofile.svg' %}" alt="my profile">
+									<a href="{% url 'profile' request.user.username %}" class="sidebar__nav__link">My Profile</a>
+								</div>
+								<div class="sidebar__nav__item">
+									<img src="{% static 'main/img/settings.svg' %}" alt="my profile">
+									<a href="{% url 'settings' %}" class="sidebar__nav__link">Settings</a>
+								</div>
+							{% endif %}					
+						</nav>
+					</div>
+
+					<div class="online_users">
+						<span class="online_users__span">Online Users<br></span>
+						<div class="online_users__counter">
+							<div class="online-dot"></div>
+							<div class="online-num">{{ online_users_count }}</div> Online
+						</div>
+						<div class="online_users__list" title="Online users for last 10 minutes">
+							{% for i in online_users %}
+								<a href="{% url 'profile' i.user.username %}">
+									<span style="color: {{i.user.userrole.role.color}};">
+										{{i.user}}
+									</span>			
+								</a>	
+								{% if i != last_online_user %}
+									&#160;
+								{% endif %}								
+							{% endfor %}
+						</div>	
+					</div>
+
+					<div class="chat-wrapper">
+						<span class="live-chat">Live Chat<br></span>
+						<div id="chat"></div>
+					</div>
+					
+				</div>
+			</aside>
+
+			<div class="main">			
+				<div class="main__inner">
+					{% if messages %}
+						{% for message in messages %}
+							<div class="alert alert-{{ message.tags }}" id="message">
+								<div class="alert-text">{{ message|safe }}</div>
+								<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>		
+							</div>
+						{% endfor %}
+					{% endif %}
+
+					<div class="main__topbar">
+						<div class="main__topbar__link_map">
+							{% block link__map %}
+							{% endblock %}
+						</div>
+						<div class="main__topbar_mobile__link_map">
+							{% block mobile__link__map %}
+							{% endblock %}
+						</div>
+						<nav class="mobile__top_links">
+							{% if user.is_authenticated %}
+								<a href="{% url 'logout' %}">Logout</i></a>
+							{% else %}
+								<a href="{% url 'login' %}">Login</a>
+								<a href="{% url 'signup' %}">Sign Up</a>
+							{% endif %}
+						</nav>
+					</div>
+
+					{% if announc != None %}
+						<div class="announcement">
+							<div><i class="fas fa-bullhorn"></i></div>
+							<div>{{announc.announc|safe}}</div>
+						</div>
+					{% endif %}	
+
+					<div class="content">
+						<div class="content__inner">
+							{% block content %}
+							{% endblock %}
+						</div>
+					</div>
+
+					<footer>	
+						<div class="footer__inner">
+							<div class="footer__left">
+								<div>
+									<img src="{% static 'main/img/logo.svg' %}" alt="Lock">
+									<span>DARKZONE 2021</span>
+								</div>
+								<div>
+									<small><i class="far fa-copyright"></i> Nikoloz Naskidashvili</small>
+								</div>
+							</div>
+							<div class="footer__right">
+								<div class="footer__butt footer_first_butts">
+									<button>
+										<a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+									</button>
+								</div>
+								<div class="footer__butt footer_first_butts">
+									<button>
+										<a href="{% url 'terms&rules' %}">Terms & Rules</a>
+									</button>
+								</div>
+								<div class="footer__butt">
+									<button>
+										<a href="{% url 'contactus' %}">Contact Us</a>
+									</button>
+								</div>
+							</div>	
+						</div>
+					</footer>					
+				</div>				
+			</div>
+		</div>
+	</main>
+
+	<!-- ================ GO UP BUTTON ================ -->
+	<div class="goup__butt">
+		<button id="goup">
+			<i class="fas fa-angle-up fa-lg"></i>
+		</button>
+	</div>	
+
+	<!-- ================ SIDE NAV ================ -->
+	<div class="mobile_nav" id="mobile_nav">
+		<span class="close-mobile-nav" id="close-mobile-nav">&times;</span>
+		<div class="mobile_nav__inner">
+			<div class="sidebar__navbar">
+				<span>Navigation<br></span>
+				<nav class="sidebar__nav">
+					<div class="sidebar__nav__item">
+						<img src="{% static 'main/img/home.svg' %}" alt="home">
+						<a href="{% url 'home' %}" class="sidebar__nav__link">Home</a>
+					</div>
+					<div class="sidebar__nav__item">
+						<img src="{% static 'main/img/forum.svg' %}" alt="forum">
+						<a href="{% url 'forums' %}" class="sidebar__nav__link">Forums</a>
+					</div>
+					<div class="sidebar__nav__item">
+						<img src="{% static 'main/img/members.svg' %}" alt="members">
+						<a href="{% url 'members' %}" class="sidebar__nav__link">Members</a>
+					</div>
+					{% if user.is_authenticated %}
+						<div class="sidebar__nav__item">
+							<img src="{% static 'main/img/myprofile.svg' %}" alt="my profile">
+							<a href="{% url 'profile' request.user.username %}" class="sidebar__nav__link">My Profile</a>
+						</div>
+						<div class="sidebar__nav__item">
+							<img src="{% static 'main/img/settings.svg' %}" alt="my profile">
+							<a href="{% url 'settings' %}" class="sidebar__nav__link">Settings</a>
+						</div>
+					{% endif %}					
+				</nav>
+			</div>
+
+			<div class="online_users">
+				<span class="online_users__span">Online Users<br></span>
+				<div class="online_users__counter">
+					<div class="online-dot"></div>
+					<div class="online-num">{{ online_users_count }}</div> Online
+				</div>
+				<div class="online_users__list" title="Online users for last 10 minutes">
+					{% for i in online_users %}
+						<a href="{% url 'profile' i.user.username %}">
+							<span style="color: {{i.user.userrole.role.color}};">
+								{{i.user}}
+							</span>			
+						</a>
+						{% if i != last_online_user %}
+							&#160;
+						{% endif %}								
+					{% endfor %}
+				</div>	
+			</div>
+
+			<div class="chat-wrapper">
+				<span class="mobile-sidebar-stats">Statistics<br></span>
+				<div class="mobile-stats-list stats-list">
+					<div class="mobile-stats-list-item stats-list-item">
+						<div class="list-num">{{threads_cnt}}</div>
+						<div class="list-name">Threads</div>
+					</div>
+					<div class="mobile-stats-list-item stats-list-item">
+						<div class="list-num">{{users_cnt}}</div> 
+						<div class="list-name">Members</div>		
+					</div>	
+					<div class="mobile-stats-list-item stats-list-item">
+						<div class="list-num">{{replies_cnt}}</div>
+						<div class="list-name">Replies</div>		
+					</div>
+					<div class="mobile-stats-list-item stats-list-item">
+						<div class="list-num">{{posts_cnt}}</div>
+						<div class="list-name">Posts</div>			 
+					</div>						
+				</div>
+			</div>
+		</div>	
+	</div>
+
+	<!-- ================ JAVASCRIPT ================ -->
+	<script type="text/javascript" src="{% static 'main/js/main.js' %}"></script>
+	<script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+
+	<!-- highlight.js -->
+	<script>hljs.highlightAll();</script>
+	
+	{% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
+</body>
+</html>

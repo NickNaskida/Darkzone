@@ -1,0 +1,43 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block page-name %}Login{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'login' %}">Login </a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="block__wrapper">
+		<div class="login-wrapper">
+			<form method="POST">						
+				<div class="login-popup-title">
+					<center>LogIn</center>			
+				</div>
+				{% csrf_token %}
+				{{ form|crispy }}
+				<center>
+					<button class="signin" type="submit">Login</button>
+				</center>
+			</form>		
+			<div class="login-small-text">
+				<center>
+					<small class="text-muted">
+					Don't have an account? <a class='ml-2' href="{% url 'signup' %}">Sign up</a>
+					</small><br>
+					<small class="text-muted">
+						Forgot your password? <a class="ml-2" href="{% url 'reset_password' %}"> Reset</a> 
+					</small>
+				</center>							
+			</div>						
+		</div>
+	</div>	
+{% endblock %}

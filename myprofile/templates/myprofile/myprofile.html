@@ -1,0 +1,163 @@
+{% extends 'main/layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-name %}Profile [{{user_data.username}}]{% endblock %}
+
+{% block link__map %}
+	<a href="{% url 'home' %}">Home</a>
+	<span><i class="fas fa-angle-double-right"></i></span> 
+	<a href="{% url 'profile' user_data.username %}">Profile [ {{user_data.username}} ]</a> 
+{% endblock %}
+
+{% block mobile__link__map %}
+	<span><i class="fas fa-angle-double-left"></i></span>
+	<a href="{% url 'home' %}">Home</a>	
+{% endblock %}
+
+{% block content %}
+	<div class="profile__wrapper">
+		<div class="user_profile__info">
+			<div class="user_profile__avatar">
+				<img src="{{ user_data.userprofile.avatar_pic.url }}" alt="user avatar">		
+			</div>
+			<div class="user_profile__data">
+				<span style="color: {{user_data.userrole.role.color}};">	
+					{{user_data.username}} 
+					<span>
+						{% if user_data.userrole.role %}
+							({{user_data.userrole.role}}) 
+						{% endif %}
+					</span>
+				</span>
+				<span class="user_profile__last_online">
+					{% if user_online == True %}
+						<div class="user-online">
+							<div class="online-dot"></div>
+							<div class="online-now">Online Now</div>
+						</div>
+					{% else %}
+						Last Seen: {{user_data.last_login|timesince:now}} ago
+					{% endif %}	
+				</span>
+				<hr>
+				<div class="user_profile__badges">
+					{% for i in user_data.userbadge.all %}
+						<div class="badge" style="background-color: {{i.badge.color}}">
+							<span>{{ i.badge }}</span>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		
+		<div class="profile_block_wrapper user_profile__main_info">
+			<h5>About</h5>
+			<div class="profile_about">
+				<div>
+					{{user_data.first_name}} {{user_data.last_name}}<br>
+					<span>Full Name</span>
+				</div>
+				<div>
+					{{user_data.date_joined|date:'d / b / Y'}}<br>
+					<span>Date Joined</span>
+				</div>
+				{% if user_data.userprofile.birth_date %}
+					<div>
+						{{user_data.userprofile.birth_date|date:'d / b / Y'}} <br>
+						<span>Birthday</span>
+					</div>
+				{% endif %}
+				{% if user_data.userprofile.location %}		
+					<div>
+						{{user_data.userprofile.location}}<br>
+						<span>Country & City</span>				
+					</div>
+				{% endif %}	
+			</div>
+			
+			<div class="profile_about__social">
+				{% if user_data.userprofile.github %}
+					<a href="https://github.com/{{user_data.userprofile.github}}"><i class="fab fa-github"></i></a>
+				{% endif %}	
+				{% if user_data.userprofile.facebook %}
+					<a href="{{user_data.userprofile.facebook}}" style="color: #4267B2;"><i class="fab fa-facebook"></i></a>
+				{% endif %}
+				{% if user_data.userprofile.instagram %}
+					<a href="{{user_data.userprofile.instagram}}" style="color: #ff1a1a;"><i class="fab fa-instagram"></i></a>
+				{% endif %}	
+				{% if user_data.userprofile.twitter %}
+					<a href="{{user_data.userprofile.twitter}}" style="color: #1DA1F2;"><i class="fab fa-twitter"></i></a>
+				{% endif %}	
+				{% if user_data.userprofile.youtube %}
+					<a href="{{user_data.userprofile.youtube}}" style="color: #FF0000;"><i class="fab fa-youtube"></i></a>
+				{% endif %}		
+			</div>
+		</div>
+			
+
+		<div class="profile_block_wrapper user_forum_stats_wrapper">
+			<h5><span style="color: {{user_data.userrole.role.color}};">{{user_data.username}}</span>'s Forum Statistics</h5>
+			<div class="user_forum_stats">
+				<div class="forum_stats_box">
+					<h6>Total Posts: &nbsp;{{user_data.user_posts.all.count}} </h6>
+					<span>{{posts_percentage}}% of all posts</span>
+				</div>
+				<div class="forum_stats_box">
+					<h6>Total replies: &nbsp;{{user_data.user_replies.all.count}}</h6>
+					<span>{{messages_percentage}}% of all replies</span>
+				</div>
+				<div class="forum_stats_box">
+					<h6>Likes received: &nbsp;{{likes_received}}</h6>
+					<span>{{likes_perc}}% of all likes</span>
+				</div>		
+			</div>
+		</div>	
+		<div class="profile_block_wrapper">
+			<h5 title="Only public posts*">Last Posts</h5>
+			<div class="thread_posts_wrapper user_last_posts">
+				{% for post in user_last_posts %}
+					<a href="{% url 'thread_post' post.thread.category_thread_slug post.post_slug %}" class="thread_post_link">
+						<div class="main_thread thread_post {% if forloop.counter|divisibleby:2 %}even_post{% else %}odd_post{% endif %}">
+							<div class="post_avatar">
+								<img src="{{post.author.userprofile.avatar_pic.url }}" alt="post author avatar">
+							</div>
+							<div class="post_info">
+								<div class="post_title">
+									{{post.post_title}}
+									{% if post.post_prefix == 'Question' %}
+										(Question)
+									{% endif %}
+									{% if post.post_status == 'Closed' %}
+										<span class="closed_status_lock"><i class="fas fa-lock fa-sm"></i></span>
+									{% endif %}
+								</div>
+								<div class="post_info_other">
+									by {{post.author}} &nbsp; <i class="far fa-clock fa-md"></i> {{post.post_date|date:"d/b/y | H:i"}}
+								</div>
+							</div>
+							<div class="post_stats">
+								<div class="post_likes" title="Post likes amount">
+									<i class="fas fa-thumbs-up fa-md"></i> {{post.post_likes.all.count}}
+								</div>
+								<div class="post_replies" title="Post replies amount">
+									<i class="fas fa-comments fa-md"></i> {{post.post_replies.all.count}}
+								</div>
+							</div>
+							<div class="post_last_reply" title="Last reply">
+								{% if post.post_replies.last %}
+									<div class="post_last_reply_date">
+										<i class="fas fa-reply fa-md"></i> {{post.post_replies.last.reply_date|date:"d / b / y | H:i"}}
+									</div>
+									<div class="post_last_reply_author">
+										by {{post.post_replies.last.reply_author|truncatechars:"24"}}
+									</div>
+								{% endif %}						
+							</div>
+						</div>
+					</a>
+				{% endfor %}
+			</div>
+		</div>
+	</div>	
+{% endblock %}
