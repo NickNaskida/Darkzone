@@ -9,7 +9,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
 
-	<title>Error - 404 {{exc}}</title>
+	<title>Error - 404</title>
 </head>
 
 <body>
@@ -19,7 +19,7 @@
 		</div>
 		<div class="text">
 			<center>
-				{{ exc|truncatewords:5 }}<br>
+				{% if exc|wordcount <= 4 %} {{ exc }} {% endif %}<br>
 				<a href="{% url 'home' %}">Return Home</a>
 			</center>
 		</div>
