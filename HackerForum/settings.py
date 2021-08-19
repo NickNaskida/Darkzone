@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.0.11', 'localhost']
 
@@ -68,12 +68,10 @@ MIDDLEWARE = [
 
     'online_users.middleware.OnlineNowMiddleware',
     'defender.middleware.FailedLoginMiddleware',
-    #'axes.middleware.AxesMiddleware',
 
 ]
 
 AUTHENTICATION_BACKENDS = [
-    #'axes.backends.AxesBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -155,12 +153,9 @@ USE_L10N = True
 USE_TZ = False
 
 
-# Django axes
-# AXES_COOLOFF_TIME = timedelta(minutes=5)
-
 # Django defender
 DEFENDER_LOGIN_FAILURE_LIMIT = 5
-DEFENDER_LOCKOUT_TEMPLATE = os.path.join(BASE_DIR, 'main\\templates\\main\\lockout.html')
+DEFENDER_LOCKOUT_TEMPLATE = os.path.join(BASE_DIR, 'main/templates/main/lockout.html')
 #DEFENDER_LOCK_OUT_BY_IP_AND_USERNAME = True
 #DEFENDER_DISABLE_USERNAME_LOCKOUT = True
 
@@ -179,7 +174,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'main/static'),
-    #BASE_DIR / "static",
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
