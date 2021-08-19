@@ -2769,15 +2769,15 @@ aside::after {
 
 @media (max-width: 1300px){
 	.members__main {
-	    width: calc(100% - 250px);
+	    width: calc(100% - 280px);
 	}
 
 	.members__sidebar {
-	    width: 250px;
+	    width: 280px;
 	}
 
 	.find_member form #id_username {
-		width: 180px;
+		width: 200px;
 	}
 
 
@@ -2878,7 +2878,8 @@ aside::after {
 	.last_posts__block {
 	    width: 100%;
 	    padding-right: 0px;
-	    min-height: 346px;
+	    margin-bottom: 10px;
+	    min-height: 50px;
 	}
 
 	.popular_tags__block {

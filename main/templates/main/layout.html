@@ -17,7 +17,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:title" content="DarkZone">
 	<meta property="og:description" content="Cyber Forum DarkZone, Cyber Security, Hacking, Free Soft, Database Leaks and other cool stuff for free 24/7.">
-	<meta property="og:image" content="http://192.168.0.112:8000/static/main/img/banner.png">
+	<meta property="og:image" content="http://darkzone-forum.cf:8080/static/main/img/banner.png">
 	<meta property="og:url" content="https://darkzone.">
 	<meta property="og:site_name" content="DarkZone">
 
@@ -47,6 +47,16 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
 
+	<!----------  Google Analytics ---------->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-2B16VC0VD0"></script>
+	<script>
+  		window.dataLayer = window.dataLayer || [];
+  		function gtag(){dataLayer.push(arguments);}
+  		gtag('js', new Date());
+
+  		gtag('config', 'G-2B16VC0VD0');
+	</script>
+
 	<!--------- Chat --------->
 	<script id="chatBroEmbedCode">
 		/* Chatbro Widget Embed Code Start */
@@ -55,12 +65,12 @@
 		ChatbroLoader({
 			encodedChatId: '08DV5',
 			{% if user.is_authenticated %}
-				siteDomain: '192.168.0.11', 
+				siteDomain: 'darkzone-forum.cf', 
 				siteUserExternalId: '{{request.user.id}}', 
 				siteUserFullName: '{{ request.user.username }}',
 				siteUserFullNameColor: 
 				{% if request.user.userrole.role.color %}'{{request.user.userrole.role.color}}',{% else %}'#fff',{% endif %}		 
-				siteUserAvatarUrl: 'http://192.168.0.11{{request.user.userprofile.avatar_pic.url}}', 
+				siteUserAvatarUrl: 'https://darkzone-forum.cf{{request.user.userprofile.avatar_pic.url}}', 
 				siteUserProfileUrl: '{% url 'profile' request.user %}',
 			{% endif %}	
 		});

@@ -14,7 +14,7 @@ def register(request):
 		if form.is_valid():
 			item = form.save()
 			messages.success(request, f'Account created for {item.username}')
-			notify.send(item, recipient=item, verb='notification', description='Thanks for registration, you can request your badges in live chat.')
+			notify.send(item, recipient=item, verb='info', description='Thanks for registration, you can request your badges in live chat.')
 
 			return redirect('login')
 	else:
