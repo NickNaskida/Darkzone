@@ -15,6 +15,7 @@ def create_profile(sender, instance, created, **kwargs):
 	if created:
 		UserProfile.objects.create(user=instance, slug=instance.username)
 
+
 # Group
 @receiver(post_save, sender=Group)
 def create_group(sender, instance, created, **kwargs):

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from .models import Categories, ThreadPosts, PostReplys
 
 def get_categories():
-	categories = Categories.objects.all()
+	categories = Categories.objects.all().order_by('pk')
 	return categories
 	
 

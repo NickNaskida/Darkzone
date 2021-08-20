@@ -44,7 +44,7 @@ def members(request):
 
 
 def all_members(request):
-	all_users = User.objects.all()
+	all_users = User.objects.all().order_by('-pk')
 	now =  datetime.now()
 
 	# Pagination
