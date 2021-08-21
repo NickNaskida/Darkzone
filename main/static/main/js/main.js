@@ -46,3 +46,6 @@ function HideMobileNav() {
 burger.addEventListener("click", ShowMobileNav)
 closeMobileNav.addEventListener("click", HideMobileNav)
 
+
+// Chatbro x ckeditor bug fix
+
