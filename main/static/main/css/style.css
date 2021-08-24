@@ -3411,8 +3411,9 @@ aside::after {
 	}
 
 	.online-dot-static {
-	    width: 10px;
-	    height: 10px;
+	    width: 13px;
+	    height: 13px;
+	    border: 2px solid #1f2326;
 	    bottom: 0px;
 	    right: 0px;
 	}
