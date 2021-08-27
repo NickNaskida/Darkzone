@@ -13,12 +13,7 @@ from notifications.signals import notify
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
 	if created:
-		UserProfile.objects.create(user=instance, slug=instance.username)
-		try:
-			member_role = Roles.objects.get(role='Member')
-			UserRole.objects.create(user=instance, role=member_role)
-		except:
-			pass	
+		UserProfile.objects.create(user=instance, slug=instance.username)	
 
 
 # Group
