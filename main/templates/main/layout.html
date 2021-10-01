@@ -57,24 +57,26 @@
   		gtag('config', 'G-2B16VC0VD0');
 	</script>
 
-	<!--------- Chat --------->
-	<script id="chatBroEmbedCode">
-		/* Chatbro Widget Embed Code Start */
-		function ChatbroLoader(chats,async){async=!1!==async;var params={embedChatsParameters:chats instanceof Array?chats:[chats],lang:navigator.language||navigator.userLanguage,needLoadCode:'undefined'==typeof Chatbro,embedParamsVersion:localStorage.embedParamsVersion,chatbroScriptVersion:localStorage.chatbroScriptVersion},xhr=new XMLHttpRequest;xhr.withCredentials=!0,xhr.onload=function(){eval(xhr.responseText)},xhr.onerror=function(){console.error('Chatbro loading error')},xhr.open('GET','//www.chatbro.com/embed.js?'+btoa(unescape(encodeURIComponent(JSON.stringify(params)))),async),xhr.send()}
-		/* Chatbro Widget Embed Code End */
-		ChatbroLoader({
-			encodedChatId: '08DV5',
-			{% if user.is_authenticated %}
-				siteDomain: 'darkzone-forum.cf', 
-				siteUserExternalId: '{{request.user.id}}', 
-				siteUserFullName: '{{ request.user.username }}',
-				siteUserFullNameColor: 
-				{% if request.user.userrole.role.color %}'{{request.user.userrole.role.color}}',{% else %}'#fff',{% endif %}		 
-				siteUserAvatarUrl: 'https://darkzone-forum.cf{{request.user.userprofile.avatar_pic.url}}', 
-				siteUserProfileUrl: '{% url 'profile' request.user %}',
-			{% endif %}	
-		});
-	</script>
+	{% if request.user.userrole.role %}
+		<!--------- Chat --------->
+		<script id="chatBroEmbedCode">
+			/* Chatbro Widget Embed Code Start */
+			function ChatbroLoader(chats,async){async=!1!==async;var params={embedChatsParameters:chats instanceof Array?chats:[chats],lang:navigator.language||navigator.userLanguage,needLoadCode:'undefined'==typeof Chatbro,embedParamsVersion:localStorage.embedParamsVersion,chatbroScriptVersion:localStorage.chatbroScriptVersion},xhr=new XMLHttpRequest;xhr.withCredentials=!0,xhr.onload=function(){eval(xhr.responseText)},xhr.onerror=function(){console.error('Chatbro loading error')},xhr.open('GET','//www.chatbro.com/embed.js?'+btoa(unescape(encodeURIComponent(JSON.stringify(params)))),async),xhr.send()}
+			/* Chatbro Widget Embed Code End */
+			ChatbroLoader({
+				encodedChatId: '08DV5',
+				{% if user.is_authenticated %}
+					siteDomain: 'darkzone-forum.cf', 
+					siteUserExternalId: '{{request.user.id}}', 
+					siteUserFullName: '{{ request.user.username }}',
+					siteUserFullNameColor: 
+					{% if request.user.userrole.role.color %}'{{request.user.userrole.role.color}}',{% else %}'#fff',{% endif %}		 
+					siteUserAvatarUrl: 'https://darkzone-forum.cf{{request.user.userprofile.avatar_pic.url}}', 
+					siteUserProfileUrl: '{% url 'profile' request.user %}',
+				{% endif %}	
+			});
+		</script>
+	{% endif %}
 </head>
 
 <body>
