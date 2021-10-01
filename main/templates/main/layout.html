@@ -162,10 +162,12 @@
 						</div>	
 					</div>
 
-					<div class="chat-wrapper">
-						<span class="live-chat">Live Chat<br></span>
-						<div id="chat"></div>
-					</div>
+					{% if request.user.userrole.role %}
+						<div class="chat-wrapper">
+							<span class="live-chat">Live Chat<br></span>
+							<div id="chat"></div>
+						</div>
+					{% endif %}
 					
 				</div>
 			</aside>
